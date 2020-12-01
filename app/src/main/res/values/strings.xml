@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">蘑菇杀手</string>
+    <string name="app_name">Skeleton killer</string>
     <string name="name_hint">Enter Number</string>
+    <string name="Slogin">DANGEROUS\nDON\'T TRY THIS!!!</string>
+    <string name="attack">ATTACK</string>
 </resources>
