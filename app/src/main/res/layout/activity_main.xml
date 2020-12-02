@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        android:contentDescription="TODO" />
 
 
     <LinearLayout
@@ -36,7 +37,6 @@
 
             android:layout_marginBottom="40dp"
 
-            android:hint="@string/name_hint"
             android:textColorHint="@color/white"
 
             app:boxCornerRadiusBottomEnd="20dp"
@@ -45,11 +45,13 @@
             app:boxCornerRadiusTopStart="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
-
+                android:hint="@string/name_hint"
+                android:textStyle="bold"
+                android:typeface="monospace"
+                android:gravity="center"
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:inputType="number"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -119,12 +121,12 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="casual"
         android:textStyle="bold"
         android:typeface="monospace"
         android:gravity="center"
         android:text="@string/Slogin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"

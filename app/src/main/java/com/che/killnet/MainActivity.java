@@ -41,8 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_login;
     static LoginCallBackListener loginCallBackListener;
     static WIFICallBackListener wifiCallBackListener;
-//    private AlertDialog.Builder builder;
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getPostBean();
+        Log.d(TAG, "onRestart: 我回来啦");
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         String loginname = et_name.getText().toString();
 
         if (loginname.isEmpty()) {
-            et_name.setError("用户名不能为空🤭");
+            et_name.setError("ATTACK!!!");
             valid = false;
         } else {
             et_name.setError(null);
