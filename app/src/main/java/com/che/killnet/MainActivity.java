@@ -106,51 +106,62 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "showDeleteDevicesDialog大小: " + devicesInfoBeanArrayList.size());
         String[] deviceslistDeviceType = new String[devicesInfoBeanArrayList.size()];
 
-        for (int i = 0; i < devicesInfoBeanArrayList.size(); i++) {
-            deviceslistDeviceType[i] = devicesInfoBeanArrayList.get(i).getDeviceType();
+
+
+        if (devicesInfoBeanArrayList.size() == 0){
+            Log.d(TAG, "showDeleteDevicesDialog: z找不到任何设备");
+            showNoDevicesDialog();
+
+        }
+        else{
+
+
+            for (int i = 0; i < devicesInfoBeanArrayList.size(); i++) {
+                deviceslistDeviceType[i] = devicesInfoBeanArrayList.get(i).getDeviceType();
+            }
+
+
+            //默认都未选中
+            boolean[] isSelect = {false, false};
+
+
+            AlertDialog builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_hacker_black)
+                    .setTitle("ATTACK DEVICES ")
+                    .setMultiChoiceItems(deviceslistDeviceType, isSelect, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+
+                            if (b) {
+                                choice.add(i);
+                            } else {
+                                choice.remove(choice.indexOf(i));
+                            }
+
+                        }
+                    }).setPositiveButton("ATTACK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int whitch) {
+                            StringBuilder str = new StringBuilder();
+
+                            for (int i = 0; i < choice.size(); i++) {
+                                Log.d(TAG, "onClick抛弃名字: " + devicesInfoBeanArrayList.get(choice.get(i)).getDeviceType() + "    ");
+                                str.append(devicesInfoBeanArrayList.get(choice.get(i)).getDeviceType() + "    ");
+                                DeleteDevices(devicesInfoBeanArrayList.get(choice.get(i)).getAcct_unique_id());
+                            }
+                            Log.d(TAG, "onClick: " + "你抛弃了" + str);
+
+                        }
+                    })
+                    .show();;
+
+
+            builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(20);
+
+            builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.black));
+//        builder.create().show();
+
         }
 
-
-        //默认都未选中
-        boolean[] isSelect = {false, false};
-
-
-
-
-        AlertDialog builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_hacker_black)
-                .setTitle("ATTACK DEVICES ")
-                .setMultiChoiceItems(deviceslistDeviceType, isSelect, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-
-                        if (b) {
-                            choice.add(i);
-                        } else {
-                            choice.remove(choice.indexOf(i));
-                        }
-
-                    }
-                }).setPositiveButton("ATTACK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int whitch) {
-                        StringBuilder str = new StringBuilder();
-
-                        for (int i = 0; i < choice.size(); i++) {
-                            Log.d(TAG, "onClick抛弃名字: " + devicesInfoBeanArrayList.get(choice.get(i)).getDeviceType() + "    ");
-                            str.append(devicesInfoBeanArrayList.get(choice.get(i)).getDeviceType() + "    ");
-                            DeleteDevices(devicesInfoBeanArrayList.get(choice.get(i)).getAcct_unique_id());
-                        }
-                        Log.d(TAG, "onClick: " + "你抛弃了" + str);
-
-                    }
-                })
-                .show();;
-
-
-        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(20);
-
-        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.black));
-//        builder.create().show();
 
     }
 
@@ -185,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     showDeleteDevicesDialog(devicesInfoBeanArrayList);
                 } else{
                     Log.d(TAG, "handleMessage: 找不到设备");
-                    showNoDevicesDialog();
+                    showWrongNumberDialog();
 
                 }
 
@@ -209,39 +220,23 @@ public class MainActivity extends AppCompatActivity {
 
         builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.black));
 
+    }
 
+    private void showWrongNumberDialog() {
 
+        AlertDialog builder = new AlertDialog.Builder(this,R.style.MyDialogTheme)
+                .setTitle("ERROR")
+                .setMessage("\n     WRONG NUMBER")
+                .setPositiveButton("OK", null)
+                .show();
 
-/*        try {
-            //获取mAlert对象
-            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
-            mAlert.setAccessible(true);
-            Object mAlertController = mAlert.get(builder);
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(20);
 
-
-
-            //获取mTitleView并设置大小颜色
-            Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
-            mTitle.setAccessible(true);
-            TextView mTitleView = (TextView) mTitle.get(mAlertController);
-            mTitleView.setTextSize(40);
-            mTitleView.setTextColor(Color.YELLOW);
-
-            //获取mMessageView并设置大小颜色
-            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
-            mMessage.setAccessible(true);
-            TextView mMessageView = (TextView) mMessage.get(mAlertController);
-            mMessageView.setTextColor(Color.RED);
-            mMessageView.setTextSize(30);
-
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }*/
-
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.black));
 
     }
+
+
 }
 
 
