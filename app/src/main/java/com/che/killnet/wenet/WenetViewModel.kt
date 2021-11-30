@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.NetworkUtils
+import com.chaquo.python.Python
 import com.che.killnet.MyApplication.Companion.context
 import com.che.killnet.wenet.model.DeleteBean
 import com.che.killnet.wenet.model.LoginPostBody
@@ -116,6 +117,13 @@ class WenetViewModel: ViewModel() {
      */
     private fun cve(inputString: String) {
         Log.d("cve", "ip to attack is $inputString")
+        // 调用python代码
+        val py = Python.getInstance()
+        try {
+            py.getModule("cve-2020-0796-crash").callAttr("killIp",inputString);
+        } catch (e: Exception) {
+            print(e.message)
+        }
     }
 
     fun loginWenet() {
