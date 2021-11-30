@@ -25,66 +25,46 @@ class WenetViewModel: ViewModel() {
     var IpAddressByWifi = "1"
 
 
-    fun netCheck() {
-//        获取 ConnectivityManager 的实例
-        val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
-//        使用此实例获取对应用当前默认网络的引用
-//        val currentNetwork = connectivityManager.activeNetwork
-//        通过对网络的引用，您的应用可以查询有关网络的信息
-
-
-        connectivityManager.registerDefaultNetworkCallback(object :
-            ConnectivityManager.NetworkCallback() {
-//            override fun onAvailable(network: Network) {
-//                Log.e("test123", "现在的网络是$")
-//            }
+//    fun netCheck() {
+////        获取 ConnectivityManager 的实例
+//        val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
+////        使用此实例获取对应用当前默认网络的引用
+////        val currentNetwork = connectivityManager.activeNetwork
+////        通过对网络的引用，您的应用可以查询有关网络的信息
 //
-//            override fun onLost(network : Network) {
-//                Log.e("test123", "刚刚断开网络,刚才连接的是 " + network)
-//            }
 //
-//            override fun onCapabilitiesChanged(network : Network, networkCapabilities : NetworkCapabilities) {
-//                Log.e("test123", "The default network changed capabilities: " + networkCapabilities)
-//            }
-
-
-            override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
-
-                IpAddressByWifi = NetworkUtils.getIpAddressByWifi()
-
-                Log.e("test123", "getIpAddressByWifi,$IpAddressByWifi")
-
-//                IpAddressByWifi.showToast(context)
-                if("10.1" in IpAddressByWifi){
-                    buttonState.postValue("wifi_available")
-                }else{
-                    buttonState.postValue("wifi_not_available")
-                }
-
-//                if ("192.168" in IpAddressByWifi) {
-//                    "暂时不支持路由器".showToast(context)
-//                    Log.d("test123", "onLinkPropertiesChanged:暂时不支持路由器 ")
-//                    buttonState.postValue("wifi_not_available")
-//                } else if ("10.1" in IpAddressByWifi) {
-////                    "可以登陆".showToast(context)
-//                    Log.d("test123", "onLinkPropertiesChanged:可以登陆2.4gip$IpAddressByWifi ")
+//        connectivityManager.registerDefaultNetworkCallback(object :
+//            ConnectivityManager.NetworkCallback() {
+////            override fun onAvailable(network: Network) {
+////                Log.e("test123", "现在的网络是$")
+////            }
+////
+////            override fun onLost(network : Network) {
+////                Log.e("test123", "刚刚断开网络,刚才连接的是 " + network)
+////            }
+////
+////            override fun onCapabilitiesChanged(network : Network, networkCapabilities : NetworkCapabilities) {
+////                Log.e("test123", "The default network changed capabilities: " + networkCapabilities)
+////            }
+//
+//
+//            override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
+//
+//                IpAddressByWifi = NetworkUtils.getIpAddressByWifi()
+//
+//                Log.e("test123", "getIpAddressByWifi,$IpAddressByWifi")
+//
+////                IpAddressByWifi.showToast(context)
+//                if("10.1" in IpAddressByWifi){
 //                    buttonState.postValue("wifi_available")
-//                } else if ("10.8" in IpAddressByWifi) {
-//                    "暂时不支持NWUNET".showToast(context)
-//                    Log.d("test123", "onLinkPropertiesChanged:暂时不支持NWUNET ")
-//                    buttonState.postValue("wifi_not_available")
-//                } else {
-////                    "流量".showToast(context)
-////                    Log.d("test123", "onLinkPropertiesChanged:流量 ")
+//                }else{
 //                    buttonState.postValue("wifi_not_available")
 //                }
-
-
-            }
-        })
-
-
-    }
+//            }
+//        })
+//
+//
+//    }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,11 +98,33 @@ class WenetViewModel: ViewModel() {
     /**
      * 登陆校园网
      */
+
+    //根据输入的内容来决定使用哪个功能，1.loginWenet断校园网 2.利用cve-2020-0796蓝屏
+    fun switchFunction() {
+        val inputString = name.value!!
+        if ("." in inputString)
+            cve(inputString)
+        else
+            loginWenet()
+
+
+
+
+    }
+    /*
+    利用cve-2020-0796蓝屏,执行python代码
+     */
+    private fun cve(inputString: String) {
+        Log.d("cve", "ip to attack is $inputString")
+    }
+
     fun loginWenet() {
 
         //根据ip修改连接
+//        var url =
+//            "http://10.16.0.12:8081/?usermac=XX:XX:XX:XX:XX:XX&userip=MYIP&origurl=http://edge.microsoft.com/captiveportal/generate_204&nasip=10.100.0.1"
         var url =
-            "http://10.16.0.12:8081/?usermac=XX:XX:XX:XX:XX:XX&userip=MYIP&origurl=http://edge.microsoft.com/captiveportal/generate_204&nasip=10.100.0.1"
+            "http://10.16.0.21/?usermac=XX:XX:XX:XX:XX:XX&userip=MYIP&origurl=http://edge.microsoft.com/captiveportal/generate_204&nasip=10.100.0.1"
         url = url.replace("MYIP", IpAddressByWifi)
 
         val loginPostBody = LoginPostBody(

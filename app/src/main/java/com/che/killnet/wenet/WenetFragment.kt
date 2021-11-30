@@ -14,11 +14,7 @@ import com.che.killnet.wenet.model.SearchSessionsResponse
 
 class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
 
-    override fun onResume() {
-        Log.d("test123", "onResume:检查网络 ")
-        viewModel.netCheck()
-        super.onResume()
-    }
+
 
     override fun observerData() {
         binding.model = viewModel
@@ -55,54 +51,6 @@ class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
 
                         viewModel.buttonState.value = "2_devices"
 
-//                    if (this.statusCode == 200) {
-//                        Log.d("test123", "登陆成功")
-//                        "登陆成功啦".showToast(requireContext())
-//                    } else {
-//                        this.errorDescription.apply {
-///*
-//                            when (this.first()) {
-//                                //pc already have 2 sessions
-//                                'p' -> {
-////                                    "已登陆2台设备".showToast(requireContext())
-//                                    viewModel.buttonState.value = "2_devices"
-//
-//                                }
-//                                //invalid username or password
-//                                'i' -> {
-//
-//                                    "用户名或密码错误".showToast(requireContext())
-//
-//                                    viewModel.buttonState.value = "wrong_password"
-//                                }
-//
-//                                //NAS no response
-//                                'N' -> {
-//                                    "是不是连错网了".showToast(requireContext())
-//                                    viewModel.buttonState.value = "wifi_not_available"
-//
-//                                }
-//                                //authentication rejected
-//                                //删除了设备马上重新登陆会出现这个问题
-//                                'a' -> {
-////                                    "等会再登陆".showToast(requireContext())
-//                                    sleep(800)
-//                                    viewModel.loginWenet()
-//
-//                                }
-//                                //Failed to login
-//                                'F' -> {
-//                                    "Failed to login".showToast(requireContext())
-//                                    viewModel.buttonState.value = "wrong_password"
-//
-//                                }
-//
-//                            }
-//*/
-//
-//                        }
-//                        Log.d("test123", "登陆失败:原因:${this.errorDescription}")
-//                    }
                     }
                 })
         viewModel.deleteLiveData.observe(this,

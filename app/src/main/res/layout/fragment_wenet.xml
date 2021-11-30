@@ -56,7 +56,8 @@
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789."
                     android:text="@={model.name}"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
@@ -71,7 +72,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:backgroundTint="@color/white"
                 android:text="@string/attack"
-                android:onClick="@{()-> model.loginWenet()}"
+                android:onClick="@{()-> model.switchFunction()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/black"
                 android:textStyle="bold"
