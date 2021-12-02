@@ -65,9 +65,7 @@ class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
             { result ->
                 Log.d("cve", "token:$result")
                 if (result) {
-//                    viewModel.buttonState.value = "crash"
-                    showNoCrashDialog()
-//                    showCrashDialog()
+                    showCrashDialog()
                 } else {
                     showNoCrashDialog()
 
@@ -110,64 +108,32 @@ class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
 
     }
 
-//    private fun showCrashDialog() {
-//
-//        AlertDialog.Builder(requireContext(), R.style.UpdateDialogStyle)
-//            .setTitle("Vulnerable!")
-//            .setIcon(R.drawable.ic_icon)
-//            .setCancelable(false)
-//            .setNeutralButton("Cancel") { dialog, which -> }
-//            .setPositiveButton("Crash") { dialog, which ->
-//                Log.e("cve", "Select To crash")
-//                viewModel.name.value?.let { viewModel.crashTarget(it) }
-//                viewModel.crashTarget(viewModel.name.value!!)
-//            }
-//            .show()
-//
-//    }
+    private fun showCrashDialog() {
+        AlertDialog.Builder(requireContext(), R.style.UpdateDialogStyle)
+            .setTitle("Vulnerable!")
+            .setIcon(R.drawable.ic_icon)
+            .setCancelable(false)
+            .setNeutralButton("Cancel") { dialog, which -> }
+            .setPositiveButton("Crash") { dialog, which ->
+                Log.e("cve", "Select To crash")
+                viewModel.crashTarget(viewModel.name.value!!)
+            }
+            .show()
+
+    }
 
 
     private fun showNoCrashDialog(){
-        val showNoCrashDialogbuilder = AlertDialog.Builder(context, R.style.UpdateDialogStyle)
 
-        Log.e("cve", "${viewModel.ifVulnerableLiveData.value}")
-
-        if (viewModel.ifVulnerableLiveData.value!!){
-            showNoCrashDialogbuilder
-                .setTitle("Vulnerable!")
-                .setIcon(R.drawable.ic_icon)
-                .setCancelable(false)
-                .setNeutralButton("Cancel") { dialog, which -> }
-                .setPositiveButton("Crash") { dialog, which ->
-                    Log.e("cve", "Select To crash")
-                    viewModel.name.value?.let { viewModel.crashTarget(it) }
-                    viewModel.crashTarget(viewModel.name.value!!)
-                }
-                .show()
-        }
-        else{
-            showNoCrashDialogbuilder
-                .setTitle("Not Vulnerable!")
-                .setIcon(R.drawable.ic_icon)
-                .setCancelable(false)
+        AlertDialog.Builder(requireContext(),R.style.UpdateDialogStyle)
+            .setTitle("Not Vulnerable!")
+            .setIcon(R.drawable.ic_icon)
+            .setCancelable(false)
 //            .setNeutralButton("Cancel") { dialog, which -> }
-                .setPositiveButton("Cancel") { dialog, which ->
-                    Log.e("cve", "No crash")
-                }
-                .show()
-        }
-
-
-//        AlertDialog.Builder(requireContext(),R.style.UpdateDialogStyle)
-//        showNoCrashDialogbuilder
-//            .setTitle("Not Vulnerable!")
-//            .setIcon(R.drawable.ic_icon)
-//            .setCancelable(false)
-////            .setNeutralButton("Cancel") { dialog, which -> }
-//            .setPositiveButton("Cancel") { dialog, which ->
-//                Log.e("cve", "No crash")
-//            }
-//            .show()
+            .setPositiveButton("Cancel") { dialog, which ->
+                Log.e("cve", "No crash")
+            }
+            .show()
 
     }
 

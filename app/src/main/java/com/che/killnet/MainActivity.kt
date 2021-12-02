@@ -14,10 +14,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initPython()
+        initPython()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initPython()
-        initPython()
+
         // 初始化Python环境
 
 

