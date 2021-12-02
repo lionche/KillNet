@@ -10,7 +10,8 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.che.killnet"
+        applicationId "com.fruitbasket.audioplatform"
+//        applicationId "com.che.killnet"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1

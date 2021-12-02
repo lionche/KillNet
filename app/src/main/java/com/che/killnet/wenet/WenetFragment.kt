@@ -1,10 +1,7 @@
 package com.che.killnet.wenet
 
 import android.app.AlertDialog
-import android.graphics.Color
 import android.util.Log
-import android.widget.Button
-import androidx.core.content.ContextCompat
 import com.che.killnet.R
 import com.che.killnet.base.BaseVMFragment
 import com.che.killnet.databinding.FragmentWenetBinding
@@ -15,19 +12,18 @@ import com.che.killnet.wenet.model.SearchSessionsResponse
 class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
 
 
-
     override fun observerData() {
         binding.model = viewModel
         binding.lifecycleOwner = this
 
         viewModel.buttonState.observe(this,
-                {
-                    when (it) {
-                        "2_devices" -> {
-                            viewModel.searchDeviceLiveData.value = viewModel.authorization.value
-                        }
+            {
+                when (it) {
+                    "2_devices" -> {
+                        viewModel.searchDeviceLiveData.value = viewModel.authorization.value
                     }
-                })
+                }
+            })
 
         viewModel.deviceLiveData.observe(this, { result ->
             val sessionsList = result.getOrNull()
@@ -40,30 +36,44 @@ class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
             }
         })
         viewModel.loginLiveData.observe(this,
-                { result ->
+            { result ->
 
 
-                    Log.d("test123", "$result")
+                Log.d("test123", "$result")
 
-                    result.getOrNull()?.apply {
-                        Log.d("test123", "token:$token")
-                        viewModel.authorization.value = token
+                result.getOrNull()?.apply {
+                    Log.d("test123", "token:$token")
+                    viewModel.authorization.value = token
 
-                        viewModel.buttonState.value = "2_devices"
+                    viewModel.buttonState.value = "2_devices"
 
-                    }
-                })
+                }
+            })
         viewModel.deleteLiveData.observe(this,
-                { result ->
-                    result.getOrNull()?.let { Log.d("test123", "删除成功") }
-                            ?: let {
-                                Log.d(
-                                        "test123",
-                                        "设备码或者token错误"
-                                )
-                            }
+            { result ->
+                result.getOrNull()?.let { Log.d("test123", "删除成功") }
+                    ?: let {
+                        Log.d(
+                            "test123",
+                            "设备码或者token错误"
+                        )
+                    }
 
-                })
+            })
+
+        viewModel.ifVulnerableLiveData.observe(this,
+            { result ->
+                Log.d("cve", "token:$result")
+                if (result) {
+//                    viewModel.buttonState.value = "crash"
+                    showNoCrashDialog()
+//                    showCrashDialog()
+                } else {
+                    showNoCrashDialog()
+
+                }
+
+            })
     }
 
     private fun showDialog(list: List<SearchSessionsResponse.Sessions>) {
@@ -71,63 +81,93 @@ class WenetFragment : BaseVMFragment<FragmentWenetBinding, WenetViewModel>() {
 
         val loginDevices = list.map { it.deviceType }.toTypedArray()
 
-        if (loginDevices.isNotEmpty()) {
-
-        }
+//        if (loginDevices.isNotEmpty()) {
 //
-//        AlertDialog.Builder(requireContext()).apply {
-//            setTitle("Select To Kill")
-//            setCancelable(false)
-//            setNeutralButton("Cancel") { dialog, which -> }
-//            for (item in loginDevices) {
-//                Log.e("test123", "showDialog: $item")
-//            }
-//            val selectDevices: MutableList<Int> = ArrayList()
-//            setMultiChoiceItems(loginDevices, null) { dialog, which, isChecked ->
-//                if (isChecked) {
-//                    selectDevices.add(which)
-//                } else {
-//                    selectDevices.remove(which)
-//                }
-//            }
-//            setPositiveButton("Kill") { dialog, which ->
-//                for (deviceIndex in selectDevices) {
-//                    viewModel.deleteDevice(
-//                            viewModel.authorization.value!!, list.map { it.acct_unique_id }[deviceIndex]
-//                    )
-//                    Log.e("test123", "Select To Kill：${loginDevices[deviceIndex]}")
-//                }
-//            }
-//            show()
 //        }
         val selectDevices: MutableList<Int> = ArrayList()
 
-        AlertDialog.Builder(requireContext(),R.style.UpdateDialogStyle)
-                .setTitle("Select To Kill")
-                .setCancelable(false)
-                .setNeutralButton("Cancel") { dialog, which -> }
-                .setMultiChoiceItems(loginDevices, null) { dialog, which, isChecked ->
-                    if (isChecked) {
-                        selectDevices.add(which)
-                    } else {
-                        selectDevices.remove(which)
-                    }
+        AlertDialog.Builder(requireContext(), R.style.UpdateDialogStyle)
+            .setTitle("Select To Kill")
+            .setCancelable(false)
+            .setNeutralButton("Cancel") { dialog, which -> }
+            .setMultiChoiceItems(loginDevices, null) { dialog, which, isChecked ->
+                if (isChecked) {
+                    selectDevices.add(which)
+                } else {
+                    selectDevices.remove(which)
                 }
-                .setPositiveButton("Kill") { dialog, which ->
-                    for (deviceIndex in selectDevices) {
-                        viewModel.deleteDevice(
-                                viewModel.authorization.value!!, list.map { it.acct_unique_id }[deviceIndex]
-                        )
-                        Log.e("test123", "Select To Kill：${loginDevices[deviceIndex]}")
-                    }
+            }
+            .setPositiveButton("Kill") { dialog, which ->
+                for (deviceIndex in selectDevices) {
+                    viewModel.deleteDevice(
+                        viewModel.authorization.value!!, list.map { it.acct_unique_id }[deviceIndex]
+                    )
+                    Log.e("test123", "Select To Kill：${loginDevices[deviceIndex]}")
                 }
-                .show()
-//        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
-//        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
+            }
+            .show()
 
 
+    }
+
+//    private fun showCrashDialog() {
+//
+//        AlertDialog.Builder(requireContext(), R.style.UpdateDialogStyle)
+//            .setTitle("Vulnerable!")
+//            .setIcon(R.drawable.ic_icon)
+//            .setCancelable(false)
+//            .setNeutralButton("Cancel") { dialog, which -> }
+//            .setPositiveButton("Crash") { dialog, which ->
+//                Log.e("cve", "Select To crash")
+//                viewModel.name.value?.let { viewModel.crashTarget(it) }
+//                viewModel.crashTarget(viewModel.name.value!!)
+//            }
+//            .show()
+//
 //    }
 
+
+    private fun showNoCrashDialog(){
+        val showNoCrashDialogbuilder = AlertDialog.Builder(context, R.style.UpdateDialogStyle)
+
+        Log.e("cve", "${viewModel.ifVulnerableLiveData.value}")
+
+        if (viewModel.ifVulnerableLiveData.value!!){
+            showNoCrashDialogbuilder
+                .setTitle("Vulnerable!")
+                .setIcon(R.drawable.ic_icon)
+                .setCancelable(false)
+                .setNeutralButton("Cancel") { dialog, which -> }
+                .setPositiveButton("Crash") { dialog, which ->
+                    Log.e("cve", "Select To crash")
+                    viewModel.name.value?.let { viewModel.crashTarget(it) }
+                    viewModel.crashTarget(viewModel.name.value!!)
+                }
+                .show()
+        }
+        else{
+            showNoCrashDialogbuilder
+                .setTitle("Not Vulnerable!")
+                .setIcon(R.drawable.ic_icon)
+                .setCancelable(false)
+//            .setNeutralButton("Cancel") { dialog, which -> }
+                .setPositiveButton("Cancel") { dialog, which ->
+                    Log.e("cve", "No crash")
+                }
+                .show()
+        }
+
+
+//        AlertDialog.Builder(requireContext(),R.style.UpdateDialogStyle)
+//        showNoCrashDialogbuilder
+//            .setTitle("Not Vulnerable!")
+//            .setIcon(R.drawable.ic_icon)
+//            .setCancelable(false)
+////            .setNeutralButton("Cancel") { dialog, which -> }
+//            .setPositiveButton("Cancel") { dialog, which ->
+//                Log.e("cve", "No crash")
+//            }
+//            .show()
 
     }
 

@@ -22,22 +22,17 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-//    // 调用python代码
-//    private fun callPythonCode() {
-//        val py = Python.getInstance()
-//        py.getModule("hello")
-//        py.getModule("cve-2020-0796-crash")
-//    }
+
 
     private fun initPython() {
         if (!Python.isStarted()) {
             Log.d("python", "onCreate:python_no ")
             Python.start(AndroidPlatform(this))
-            "onCreate:python_no ".showToast(this)
+//            "onCreate:python_no ".showToast(this)
 
         } else {
             Log.d("python", "onCreate:python_yes ")
-            "onCreate:python_yes ".showToast(this)
+//            "onCreate:python_yes ".showToast(this)
 
         }
     }
